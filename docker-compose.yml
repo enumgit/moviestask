@@ -1,0 +1,28 @@
+version: "3.2"
+
+volumes:
+    mongodb_volume:
+
+services:
+    app:
+        build: auth/
+        ports:
+          - 3000:3000
+        environment:
+          - JWT_SECRET=${JWT_SECRET}
+    movies_service:
+        build: movies/
+        ports:
+            - 8080:8080
+        environment:
+            - TZ=Europe/London
+            - MONGO_DB_ADDR=mongodb
+            - MONGO_DB_PORT=27017
+            - STORAGE_SERVICE_IMPL=MongodbService
+            - JWT_SECRET=${JWT_SECRET}
+            - OMDB_APIKEY=${OMDB_APIKEY}
+            - WEB_PORT=8080
+    mongodb:
+        image: mongo:latest
+        volumes:
+            - mongodb_volume:/data/db
